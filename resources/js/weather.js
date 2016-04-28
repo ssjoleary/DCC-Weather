@@ -12,13 +12,19 @@ var ForecastList = React.createClass({
             dataType: "jsonp",
             cache: false,
             success: function (parsed_json) {
+                // Hard coding average values until I can get the averages from the DB
                 var avgHigh = 10;
                 var avgLow = 4;
+                
                 var fourDayForecast = parsed_json.forecast.simpleforecast.forecastday;
+                
+                // Mapping only the attributes I need from the data returned from the Weather Channel API for clarity
                 var simplefourDayForcast = fourDayForecast.map(function (forecastItem) {
                     var simpleforecastItem = {};
                     var highDiff = forecastItem.high.celsius - avgHigh;
                     var lowDiff = forecastItem.low.celsius - avgLow;
+                    
+                    // Attempting to get the plus sign '+' to appear in front of the positive high/low differences
                     (highDiff < 0 ? '' : '+') + highDiff.toString();
                     (lowDiff < 0 ? '' : '+') + lowDiff.toString();
                     
@@ -31,7 +37,6 @@ var ForecastList = React.createClass({
                     simpleforecastItem['lowDiff'] = lowDiff;
                     return simpleforecastItem;
                 })
-                console.log(simplefourDayForcast);
                 this.setState({ data: simplefourDayForcast });
             }.bind(this),
             error: function (xhr, status, err) {
@@ -61,6 +66,7 @@ var ForecastList = React.createClass({
 
 var ForecastItem = React.createClass({
     componentDidMount: function () {
+        // Small bit of centering of the panels
         $('.panel:first').removeClass("col-md-offset-1").css({ 'margin-left': '4%' });
     },
     render: function () {

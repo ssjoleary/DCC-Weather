@@ -213,10 +213,6 @@
 	});
 	
 	ReactDOM.render(React.createElement(ForecastList, null), document.getElementById('container'));
-	
-	$(document).ready(function () {
-	    console.log("making ajax call");
-	});
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(/*! jquery */ 2)))
 
 /***/ },
