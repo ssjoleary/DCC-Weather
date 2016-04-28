@@ -69,7 +69,7 @@
 	
 	    getForecast: function () {
 	        $.ajax({
-	            url: "http://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
+	            url: "https://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
 	            dataType: "jsonp",
 	            cache: false,
 	            success: function (parsed_json) {
@@ -84,10 +84,6 @@
 	                    var simpleforecastItem = {};
 	                    var highDiff = forecastItem.high.celsius - avgHigh;
 	                    var lowDiff = forecastItem.low.celsius - avgLow;
-	
-	                    // Attempting to get the plus sign '+' to appear in front of the positive high/low differences
-	                    (highDiff < 0 ? '' : '+') + highDiff.toString();
-	                    (lowDiff < 0 ? '' : '+') + lowDiff.toString();
 	
 	                    simpleforecastItem['day'] = forecastItem.date.weekday;
 	                    simpleforecastItem['conditions'] = forecastItem.conditions;

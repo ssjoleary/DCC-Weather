@@ -8,7 +8,7 @@ var ReactDOM = require('react-dom');
 var ForecastList = React.createClass({
     getForecast: function () {
         $.ajax({
-            url: "http://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
+            url: "https://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
             dataType: "jsonp",
             cache: false,
             success: function (parsed_json) {
