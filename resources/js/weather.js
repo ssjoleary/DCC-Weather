@@ -23,11 +23,7 @@ var ForecastList = React.createClass({
                     var simpleforecastItem = {};
                     var highDiff = forecastItem.high.celsius - avgHigh;
                     var lowDiff = forecastItem.low.celsius - avgLow;
-                    
-                    // Attempting to get the plus sign '+' to appear in front of the positive high/low differences
-                    (highDiff < 0 ? '' : '+') + highDiff.toString();
-                    (lowDiff < 0 ? '' : '+') + lowDiff.toString();
-                    
+                                        
                     simpleforecastItem['day'] = forecastItem.date.weekday;
                     simpleforecastItem['conditions'] = forecastItem.conditions;
                     simpleforecastItem['high'] = forecastItem.high.celsius;
@@ -81,10 +77,11 @@ var ForecastItem = React.createClass({
                                 <span className={"label label-danger high-label"}> High </span>
                             </div>
                             <div className={"col-md-4"}>
-                                <span className={"high-value"}>{this.props.data.high}</span>
+                                <span className={"high-value"}>{this.props.data.high}&deg;C</span>
                             </div>
                             <div className={"col-md-4"}>
-                                {this.props.data.highDiff != 0 ? <span className={"high-diff badge"}>{this.props.data.highDiff}</span> : false}
+                                {this.props.data.highDiff > 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}</span> : false}
+                                {this.props.data.highDiff < 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}</span> : false}
                             </div>
                         </div>
                         <div className={"row"}>
@@ -92,10 +89,11 @@ var ForecastItem = React.createClass({
                                 <span className={"label label-info low-label"}> Low </span>
                             </div>
                             <div className={"col-md-4"}>
-                                <span className={"low-value"}>{this.props.data.low}</span>
+                                <span className={"low-value"}>{this.props.data.low}&deg;C</span>
                             </div>
                             <div className={"col-md-4"}>
-                                {this.props.data.lowDiff != 0 ? <span className={"low-diff badge"}>{this.props.data.lowDiff}</span> : false}
+                                {this.props.data.lowDiff > 0 ? <span className={"low-diff badge"}>+{this.props.data.lowDiff}</span> : false}
+                                {this.props.data.lowDiff < 0 ? <span className={"low-diff badge"}>{this.props.data.lowDiff}</span> : false}
                             </div>
                         </div>
                     </div>
