@@ -7,4 +7,4 @@
     (GET "/" [] (resource-response "index.html" {:root "public"})))
       
 (defroutes routes
-    (GET "/" [] (resource-response "index.html" {:root "public"})))
+    (GET "/" [] (index)))

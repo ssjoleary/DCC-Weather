@@ -1,9 +1,13 @@
 var webpack = require('webpack');
+var path = require('path');
+
+var BUILD_DIR = path.resolve(__dirname, 'resources/public');
+var APP_DIR = path.resolve(__dirname, 'resources/js');
 
 var config = {
-    entry: ["./resources/js/weather.js"],
+    entry: [APP_DIR + '/weather.js'],
   output: {
-    path: "./build",
+    path: BUILD_DIR,
     filename: "bundle.js"
   },
   resolve: {
@@ -13,13 +17,19 @@ var config = {
     loaders: [
       {
         test: /\.jsx?$/,
+        include: APP_DIR,
         loader: "babel",
         exclude: /node_modules/
       }
     ]
   },
   plugins: [
-    new webpack.NoErrorsPlugin()
+    new webpack.NoErrorsPlugin(),
+    new webpack.ProvidePlugin({    // <added>
+        jQuery: 'jquery',
+        $: 'jquery',
+        jquery: 'jquery'   // </added>
+    })
 ]
 };
 

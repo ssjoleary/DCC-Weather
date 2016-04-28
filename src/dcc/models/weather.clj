@@ -5,11 +5,8 @@
                 "postgresql://localhost:5432/randomweather"))
                 
 (defn all []
-    (into [] (sql/query spec ["select * from randomweather"])))
+    (into [] (sql/query spec ["select * from highlow"])))
     
-(defn create []
-    (loop [x 28]
-         (when (> x 1)
-         (sql/insert! "postgresql://localhost:5432/randomweather" :highlow {:high (+ (rand-int 11) 15) :low (+ (rand-int 11) 5)})
-         (recur (- x 1)))))
+(defn getAvg []    
+    (into [] (sql/query spec ["select avg(high), avg(low) from highlow"])))
 
