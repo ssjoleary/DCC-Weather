@@ -1,3 +1,3 @@
-# dcc
+# Developer Coding Challenge - Weather Forecase
 
-Create a single page application that displays information about the weather today and the following three days.
+A single page application that displays information about the weather today and the following three days, writen using ReactJs and Clojure
