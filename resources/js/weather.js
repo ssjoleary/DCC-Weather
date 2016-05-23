@@ -6,16 +6,30 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 
 var ForecastList = React.createClass({
-    getForecast: function () {
+    getAverages: function () {
+      $.ajax({
+          url: "/weather/average",
+          dataType: "json",
+          success: function (json_data) {
+              this.getForecast(json_data);
+          }.bind(this),
+          error: function (xhr, status, err) {
+              console.error(this.props.url, status, err.toString());
+          }.bind(this)
+      });
+    },
+    getForecast: function (json_data) {
+        var avgHigh = parseInt(json_data.high),
+            avgLow = parseInt(json_data.low);
+
+        console.log(avgHigh);
+        console.log(avgLow);
+
         $.ajax({
             url: "https://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
             dataType: "jsonp",
             cache: false,
             success: function (parsed_json) {
-                // Hard coding average values until I can get the averages from the DB
-                var avgHigh = 10;
-                var avgLow = 4;
-                
                 var fourDayForecast = parsed_json.forecast.simpleforecast.forecastday;
                 
                 // Mapping only the attributes I need from the data returned from the Weather Channel API for clarity
@@ -32,7 +46,7 @@ var ForecastList = React.createClass({
                     simpleforecastItem['highDiff'] = highDiff;
                     simpleforecastItem['lowDiff'] = lowDiff;
                     return simpleforecastItem;
-                })
+                });
                 this.setState({ data: simplefourDayForcast });
             }.bind(this),
             error: function (xhr, status, err) {
@@ -44,7 +58,7 @@ var ForecastList = React.createClass({
         return { data: [] };
     },
     componentDidMount: function () {
-        this.getForecast();
+        this.getAverages();
     },
     render: function () {
         var forecastNodes = this.state.data.map(function (forecastItem) {
@@ -80,8 +94,8 @@ var ForecastItem = React.createClass({
                                 <span className={"high-value"}>{this.props.data.high}&deg;C</span>
                             </div>
                             <div className={"col-md-4"}>
-                                {this.props.data.highDiff > 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}</span> : false}
-                                {this.props.data.highDiff < 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}</span> : false}
+                                {this.props.data.highDiff > 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}&deg;</span> : false}
+                                {this.props.data.highDiff < 0 ? <span className={"high-diff badge"}>{this.props.data.highDiff}&deg;</span> : false}
                             </div>
                         </div>
                         <div className={"row"}>
@@ -92,8 +106,8 @@ var ForecastItem = React.createClass({
                                 <span className={"low-value"}>{this.props.data.low}&deg;C</span>
                             </div>
                             <div className={"col-md-4"}>
-                                {this.props.data.lowDiff > 0 ? <span className={"low-diff badge"}>+{this.props.data.lowDiff}</span> : false}
-                                {this.props.data.lowDiff < 0 ? <span className={"low-diff badge"}>{this.props.data.lowDiff}</span> : false}
+                                {this.props.data.lowDiff > 0 ? <span className={"low-diff badge"}>+{this.props.data.lowDiff}&deg;</span> : false}
+                                {this.props.data.lowDiff < 0 ? <span className={"low-diff badge"}>{this.props.data.lowDiff}&deg;</span> : false}
                             </div>
                         </div>
                     </div>
