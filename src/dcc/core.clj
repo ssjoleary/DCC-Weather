@@ -4,8 +4,8 @@
             [compojure.route :as route]
             [compojure.handler :as handler]
             [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
-            [dcc.controllers.home :as home]
-            [dcc.models.migration :as schema])
+            [dcc.handlers.home :as home]
+            [dcc.dal.migration :as schema])
   (:gen-class :main true))
 
 (defroutes app-routes

@@ -5,7 +5,7 @@ var BUILD_DIR = path.resolve(__dirname, 'resources/public/build');
 var APP_DIR = path.resolve(__dirname, 'resources/js');
 
 var config = {
-    entry: [APP_DIR + '/weather.js'],
+    entry: ['babel-polyfill', APP_DIR + '/weather.js'],
   output: {
     path: BUILD_DIR,
     filename: "bundle.js"

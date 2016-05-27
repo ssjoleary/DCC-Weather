@@ -1,6 +1,6 @@
-(ns dcc.models.migration
+(ns dcc.dal.migration
     (:require [clojure.java.jdbc :as sql]
-              [dcc.models.weather :as weather]))
+              [dcc.dal.weather :as weather]))
               
 (defn migrated? []
     (-> (sql/query weather/spec

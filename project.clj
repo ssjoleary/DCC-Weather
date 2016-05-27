@@ -19,7 +19,7 @@
   :main ^:skip-aot dcc.core
   :target-path "target/%s"
   :ring {:handler dcc.core/application
-         :init    dcc.models.migration/migrate}
+         :init    dcc.dal.migration/migrate}
   :profiles {:dev     {:dependencies [[javax.servlet/servlet-api "2.5"]
                                       [ring-mock "0.1.5"]]}
              :uberjar {:aot :all}})

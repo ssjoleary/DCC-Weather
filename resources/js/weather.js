@@ -1,9 +1,10 @@
 // weather.js
-var jQuery = require('jquery');
-window.$ = jQuery;
+var $ = require('jquery');
 require('bootstrap');
 var React = require('react');
 var ReactDOM = require('react-dom');
+
+var WEATHER_URL = 'https://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json';
 
 var ForecastList = React.createClass({
     getAverages: function () {
@@ -26,14 +27,14 @@ var ForecastList = React.createClass({
         console.log(avgLow);
 
         $.ajax({
-            url: "https://api.wunderground.com/api/8559dda6fb73dc2c/forecast/q/UK/London.json",
+            url: WEATHER_URL,
             dataType: "jsonp",
             cache: false,
             success: function (parsed_json) {
                 var fourDayForecast = parsed_json.forecast.simpleforecast.forecastday;
                 
                 // Mapping only the attributes I need from the data returned from the Weather Channel API for clarity
-                var simplefourDayForcast = fourDayForecast.map(function (forecastItem) {
+                var simplefourDayForecast = fourDayForecast.map(function (forecastItem) {
                     var simpleforecastItem = {};
                     var highDiff = forecastItem.high.celsius - avgHigh;
                     var lowDiff = forecastItem.low.celsius - avgLow;
@@ -47,7 +48,7 @@ var ForecastList = React.createClass({
                     simpleforecastItem['lowDiff'] = lowDiff;
                     return simpleforecastItem;
                 });
-                this.setState({ data: simplefourDayForcast });
+                this.setState({ data: simplefourDayForecast });
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -62,12 +63,10 @@ var ForecastList = React.createClass({
     },
     render: function () {
         var forecastNodes = this.state.data.map(function (forecastItem) {
-            return (
-                <ForecastItem data={forecastItem} />
-            )
+            return <ForecastItem data={forecastItem} />;
         })
         return (
-            <div className={"forcastList row"}>
+            <div className="forecastList row">
                 {forecastNodes}
             </div>
         );
@@ -76,40 +75,32 @@ var ForecastList = React.createClass({
 
 var ForecastItem = React.createClass({
     componentDidMount: function () {
-        // Small bit of centering of the panels
-        $('.panel:first').removeClass("col-md-offset-1").css({ 'margin-left': '4%' });
+    },
+    renderPart(temp, diff) {
+        return <div className="row">
+            <div className="col-md-4">
+                <span className="label label-danger high-label"> High </span>
+            </div>
+            <div className="col-md-4">
+                <span className="high-value">{temp}&deg;C</span>
+            </div>
+            <div className="col-md-4">
+                <span className="high-diff badge">
+                    {diff > 0 && '+'}
+                    {diff}&deg;
+                </span>
+            </div>
+        </div>;
     },
     render: function () {
         return (
-            <div className={"panel panel-default col-md-2 col-md-offset-1"}>
-                <div className={"panel-body"}>
-                    <div className={"forecastItem"}>
+            <div className="panel panel-default col-md-2 col-md-offset-1">
+                <div className="panel-body">
+                    <div className="forecastItem">
                         <h2>{this.props.data.day}</h2>
                         <h3>{this.props.data.conditions}</h3>
-                        <div className={"row"}>
-                            <div className={"col-md-4"}>
-                                <span className={"label label-danger high-label"}> High </span>
-                            </div>
-                            <div className={"col-md-4"}>
-                                <span className={"high-value"}>{this.props.data.high}&deg;C</span>
-                            </div>
-                            <div className={"col-md-4"}>
-                                {this.props.data.highDiff > 0 ? <span className={"high-diff badge"}>+{this.props.data.highDiff}&deg;</span> : false}
-                                {this.props.data.highDiff < 0 ? <span className={"high-diff badge"}>{this.props.data.highDiff}&deg;</span> : false}
-                            </div>
-                        </div>
-                        <div className={"row"}>
-                            <div className={"col-md-4"}>
-                                <span className={"label label-info low-label"}> Low </span>
-                            </div>
-                            <div className={"col-md-4"}>
-                                <span className={"low-value"}>{this.props.data.low}&deg;C</span>
-                            </div>
-                            <div className={"col-md-4"}>
-                                {this.props.data.lowDiff > 0 ? <span className={"low-diff badge"}>+{this.props.data.lowDiff}&deg;</span> : false}
-                                {this.props.data.lowDiff < 0 ? <span className={"low-diff badge"}>{this.props.data.lowDiff}&deg;</span> : false}
-                            </div>
-                        </div>
+                        {renderPart(this.props.data.high, this.props.data.highDiff)}
+                        {renderPart(this.props.data.low, this.props.data.lowDiff)}
                     </div>
                 </div>
             </div>
@@ -121,3 +112,57 @@ ReactDOM.render(
     <ForecastList />,
     document.getElementById('container')
 );
+
+
+
+
+var ForecastList = React.createClass({
+
+    getForecast: async function () {
+        var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+        try {
+            const data = await fetch(this.props.url)
+
+            data.forEach(function (forecast) {
+                forecast.ForecastDate = days[eval("new " + forecast.ForecastDate.slice(1, -1)).getDay()];
+            })
+            this.setState({
+                data: data,
+                isLoading: false
+            });
+            
+            const token = await fetch(url2, { method: 'POST', body: { secret: data.secret } })
+            
+            console.log(token)
+            
+        } catch (error) {
+            console.log(error.message);
+        }
+
+
+    },
+
+    getInitialState: function () {
+        return {
+            data: [],
+            isLoading: true
+        };
+    },
+    componentWillMount: function () {
+        this.getForecast();
+    },
+    render: function () {
+        var forecastNodes = this.state.data.map(function (forecastItem) {
+            return (
+                <ForecastItem data={forecastItem} />
+            )
+        })
+        return (
+            <div className={"forecastList row"}>
+                {this.state.isLoading === true ? <LoadingIcon /> : false }
+                {forecastNodes}
+            </div>
+        );
+    }
+});
